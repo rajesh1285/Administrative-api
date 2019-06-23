@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
+  # helper_method :sort_column, :sort_direction
 
   # GET /user
   def index
-    @users = User.all
+    @users = User.all.order("created_at DESC")    # ("#{sort_column} #{sort_direction}")
 
     render json: @users
   end
@@ -16,7 +17,6 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
     if @user.save
       render json: @user, status: :created, location: @user
     else
@@ -41,7 +41,13 @@ class UsersController < ApplicationController
         }
   end
 
+
   private
+
+    # def sort_direction
+    #   %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    # end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
@@ -49,6 +55,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:name, :address,:tag_id)
+      params.require(:user).permit(:name, :address)
     end
 end

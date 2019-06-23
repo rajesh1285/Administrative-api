@@ -1,4 +1,5 @@
 class TagsController < ApplicationController
+  before_action :set_tag, only: [:show, :update, :destroy]
 
   def index
     @tags = Tag.all
@@ -23,12 +24,24 @@ class TagsController < ApplicationController
        }
  end
 
+ def update
+   if @tag.update(tags_params)
+     render json: @tag
+   else
+     render json: @tag.errors, status: :unprocessable_entity
+   end
+ end
+
  def show
-   @tag = Tag.find(params[:id])
    render json: @tag
  end
 
  private
+
+   def set_tag
+     @tag = Tag.find(params[:id])
+   end
+
    def tags_params
      params.require(:tag).permit(:name, :description)
    end
